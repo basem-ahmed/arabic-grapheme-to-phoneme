@@ -32,19 +32,19 @@ public class Connector {
             while ((line = rd.readLine()) != null) {
                 builder.append(line);
             }
-            JSONObject obj = new JSONObject(builder.toString());
-            JSONArray arr = obj.getJSONArray("letters");
+            JSONObject res = new JSONObject(builder.toString());
+            JSONArray arr = res.getJSONArray("letters");
             int size = arr.length();
             for (int i = 0; i < size; i++) {
-                JSONObject obj = arr.getJSONObject(i);
-                Character letter = obj.getString("letter");
-                String phoneme = obj.getString("phoneme");
+                JSONObject grapheme = arr.getJSONObject(i);
+                Character letter = grapheme.getString("letter");
+                String phoneme = grapheme.getString("phoneme");
                 graphemes.put(letter, phoneme);
             }
         }
         catch (IOException e){
             e.printStackTrace();
         }
-        return result;
+        return graphemes;
     }
 }
