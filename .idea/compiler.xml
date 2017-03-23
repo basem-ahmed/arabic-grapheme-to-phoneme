@@ -9,7 +9,7 @@
         <module name="GraphemeToPhoneme" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
+    <bytecodeTargetLevel target="1.8">
       <module name="GraphemeToPhoneme" target="1.5" />
     </bytecodeTargetLevel>
   </component>

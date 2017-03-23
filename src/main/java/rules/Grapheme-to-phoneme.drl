@@ -1,12 +1,12 @@
 package rules;
-import grapheme.*
-import connector.Connector;
+import grapheme.*;
 
 //1
 
 rule "Sukoon deletion rule"
     when
-      $letter : Letter(content == Letter.Vowel.SUKOON)
+    //سكون
+      $letter : Letter(content == "a")
     then
       $letter.setRepresentation(Letter.NULL_CHAR);
 end
@@ -15,8 +15,8 @@ end
 
 rule "Elision First Rule(وا)"
     when
-      $letter : Letter(content == Letter.Consonant.ALIF)
-      eval($letter.lastOfPrevIs(Letter.Consonant.WAW))
+      $letter : Letter(content == "ا")
+      eval($letter.lastOfPrevIs("و"))
     then
       $letter.setRepresentation(Letter.NULL_CHAR);
 end
@@ -25,8 +25,9 @@ end
 
 rule "Elision Second Rule( الف بعدها تنوين)"
     when
-      $letter : Letter(content == Letter.Consonant.ALIF)
-      eval($letter.firstOfNextIs(Letter.Vowel.TAN_FATHA))
+      $letter : Letter(content == "ا")
+      //تنوين فتحة
+      eval($letter.firstOfNextIs(""))
     then
       $letter.setRepresentation(Letter.NULL_CHAR);
 end
@@ -35,7 +36,7 @@ end
 
 rule "Elision Third Rule( همزة الوصل متل طأطأ)"
     when
-      $letter : Letter(content == Letter.Consonant.HAMZA_ALIF)
+      $letter : Letter(content == "أ")
     then
       $letter.setRepresentation("?");
 end
@@ -44,8 +45,9 @@ end
 
 rule "Elision Fourth Rule(مد الألف متل جواب)"
     when
-      $letter : Letter(content == Letter.Consonant.ALIF)
-      eval($letter.lastOfPrevIs(Letter.Vowel.FATHA))
+      $letter : Letter(content == "ا")
+      // فتحة
+      eval($letter.lastOfPrevIs(""))
     then
       $letter.setRepresentation("a:");
 end
@@ -54,7 +56,7 @@ end
 
 rule "Ya Maqsourah"
     when
-      $letter : Letter(content == Letter.Consonant.YA_MAKSOORA)
+      $letter : Letter(content == "ى")
     then
       $letter.setRepresentation("a");
 end
@@ -62,7 +64,7 @@ end
 // 4 - 1
 rule "Glottal Stop first"
     when
-      $letter : Letter(content == Letter.Consonant.HAMZA_ALIF)
+      $letter : Letter(content == "أ")
       eval($letter.previous == null)
     then
       $letter.setRepresentation("?a");
@@ -71,7 +73,7 @@ end
 // 4 - 2
 rule "Glottal Stop second"
     when
-      $letter : Letter(content == Letter.Consonant.HAMZA)
+      $letter : Letter(content == "ء")
     then
       $letter.setRepresentation("?a");
 end
@@ -80,7 +82,8 @@ end
 
 rule "Tanween Fataha"
     when
-      $letter : Letter(content == Letter.Vowel.TAN_FATHA)
+    //تنوين فتحة
+      $letter : Letter(content == "")
     then
       $letter.setRepresentation("an");
 end
@@ -89,7 +92,8 @@ end
 
 rule "Tanween Dama"
     when
-      $letter : Letter(content == Letter.Vowel.TAN_DAMA)
+    //تنوين ضمة
+      $letter : Letter(content == "aaa")
     then
       $letter.setRepresentation("un");
 end
@@ -98,7 +102,8 @@ end
 
 rule "Tanween Kasra"
     when
-      $letter : Letter(content == Letter.Vowel.TAN_KASRA)
+    // تنوين كسرة
+      $letter : Letter(content == "aaa")
     then
       $letter.setRepresentation("in");
 end
@@ -108,9 +113,10 @@ end
 
 rule "Shedaa or Gemination"
     when
-      $letter : Letter(content == Letter.Vowel.SHEDAA)
+     //شدة
+      $letter : Letter(content == "")
     then
-      $letter.setRepresentation($letter.getLastPrev() + "");
+      $letter.setRepresentation(String.valueOf($letter.getLastPrev()));
 end
 
 
@@ -118,7 +124,7 @@ end
 
 rule "Ligature First"
     when
-      $letter : Letter(content == Letter.Consonant.HAMZA_WAW)
+      $letter : Letter(content == "ؤ")
     then
       $letter.setRepresentation("?u");
 end
@@ -127,7 +133,7 @@ end
 
 rule "Ligature Second"
     when
-      $letter : Letter(content == Letter.Consonant.HAMZA_YA)
+      $letter : Letter(content == "ئ")
     then
       $letter.setRepresentation("?i");
 end
@@ -137,7 +143,7 @@ end
 
 rule "Ligature Third"
     when
-      $letter : Letter(content == Letter.Consonant.HAMZA_ALIF)
+      $letter : Letter(content == "أ")
     then
       $letter.setRepresentation("?a");
 end
@@ -146,7 +152,7 @@ end
 
 rule "Ligature Fourth"
     when
-      $letter : Letter(content == Letter.Consonant.ALIF_MD)
+      $letter : Letter(content == "آ")
     then
       $letter.setRepresentation("?a:");
 end
@@ -155,11 +161,11 @@ end
 
 rule "Shamsi"
     when
-      $letter : Letter(content == Letter.Consonant.LAM)
-      eval($letter.lastOfPrevIs(Letter.Consonant.ALIF))
+      $letter : Letter(content == "ل")
+      eval($letter.lastOfPrevIs("ا"))
       eval($letter.firstOfNextIsShamsi())
     then
-      $letter.setRepresentation(Connector.getRepresentation($letter.getFirstOfNext()));
+      $letter.setRepresentation(Graphemes.getRepresentation($letter.getFirstOfNext()));
       $letter.setHasShamsi(true);
 end
 
@@ -168,8 +174,9 @@ end
 
 rule "Long vowel generation first"
     when
-      $letter : Letter(content == Letter.Vowel.FATHA)
-      eval($letter.firstOfNextIs(Letter.Consonant.ALIF))
+     // فتحة
+      $letter : Letter(content == "aa")
+      eval($letter.firstOfNextIs("ا"))
     then
       $letter.setRepresentation("a:");
 end
@@ -178,8 +185,9 @@ end
 
 rule "Long vowel generation second"
     when
-      $letter : Letter(content == Letter.Vowel.DAMA)
-      eval($letter.firstOfNextIs(Letter.Consonant.WAW))
+     //ضمة
+      $letter : Letter(content == "")
+      eval($letter.firstOfNextIs("و"))
     then
       $letter.setRepresentation("u:");
 end
@@ -188,8 +196,9 @@ end
 
 rule "Long vowel generation third"
     when
-      $letter : Letter(content == Letter.Vowel.KASRA)
-      eval($letter.firstOfNextIs(Letter.Consonant.YA))
+    //كسرة
+      $letter : Letter(content == "aaa")
+      eval($letter.firstOfNextIs("ي"))
     then
       $letter.setRepresentation("i:");
 end
@@ -197,8 +206,9 @@ end
 // 11 - 1
 rule "Fataha"
     when
-      $letter : Letter(content == Letter.Vowel.FATHA)
-      eval(!$letter.firstOfNextIs(Letter.Consonant.ALIF))
+    //فتحة
+      $letter : Letter(content == "saa")
+      eval(!$letter.firstOfNextIs("ا"))
     then
       $letter.setRepresentation("a:");
 end
@@ -206,8 +216,9 @@ end
 // 11 - 2
 rule "Dama"
     when
-      $letter : Letter(content == Letter.Vowel.DAMA)
-      eval(!$letter.firstOfNextIs(Letter.Consonant.WAW))
+    //ضمة
+      $letter : Letter(content == "")
+      eval(!$letter.firstOfNextIs("و"))
     then
       $letter.setRepresentation("w:");
 end
@@ -215,8 +226,9 @@ end
 // 11 - 3
 rule "Kasra"
     when
-      $letter : Letter(content == Letter.Vowel.KASRA)
-      eval(!$letter.firstOfNextIs(Letter.Consonant.YA))
+    //كسرة
+      $letter : Letter(content == "")
+      eval(!$letter.firstOfNextIs("ي"))
     then
       $letter.setRepresentation("i:");
 end

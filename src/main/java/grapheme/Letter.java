@@ -1,7 +1,6 @@
 package grapheme;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Letter implements CharSequence {
     private char content;
@@ -79,13 +78,11 @@ public class Letter implements CharSequence {
         return representation;
     }
 
-    public enum Vowel {
-        SUKOON(''), FATHA(''), DAMA(''), KASRA(''), TAN_FATHA(''), TAN_KASRA(''), TAN_DAMA(''), SHEDAA('')
-    }
-    public enum Consonant{
-        ALIF_MD(''), HAMZA_ALIF, HAMZA_WAW, HAMZA_YA, ALIF(''), LAM(''), WAW(''), YA_MAKSOORA(''), YA(''), HAMZA
-    }
     public static final String NULL_CHAR = "-";
     private static final Set<Character> shamsi = new HashSet<>();
     private static final Set<Character> qamari = new HashSet<>();
+    static {
+        shamsi = Collections.unmodifiableSet(new HashSet<>(Arrays.asList('')));
+        qamari = Collections.unmodifiableSet(new HashSet<>(Arrays.asList('')));
+    }
 }

@@ -1,5 +1,8 @@
 package grapheme;
 
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +16,17 @@ public class Word{
         letters.add(new Letter(word.charAt(word.length() - 1), word.substring(0, word.length() - 1), null));
     }
 
-    public String representation(){
+    public String representation(StatefulKnowledgeSession session){
+        int size = letters.size();
+        for (int i = 0; i < size; i++) {
+            Letter letter = letters.get(i);
+            FactHandle handle = session.insert(letter);
+            session.fireAllRules();
+            session.delete(handle);
+            if(letter.getRepresentation() == null){
+                letter.setRepresentation(Graphemes.getRepresentation(letter.getContent()));
+            }
+        }
         return String.join("", letters);
     }
 
