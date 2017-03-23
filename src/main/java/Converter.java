@@ -22,7 +22,7 @@ public class Converter {
         }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-        String text = "مرحبا كيف حالك يا صديقي ذهبوا إلى الملعب برفقة أصدقائهم طأطأ رأسه";
+        String text = "مرحبا كيف حالك يا صديقي. ذهبوا إلى الملعب برفقة أصدقائهم. طأطأ رأسه";
         System.out.println(new GraphemeToPhonemeConverter(session).convert(text));
     }
 }
