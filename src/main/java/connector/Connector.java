@@ -17,9 +17,12 @@ public class Connector {
     private Connector(){}
     private static final String port = "8080";
     private static final String url = "http://localhost:" + port + "/letters";
+    private static Map<Character, String> graphemes;
     public static Map<Character, String> getGraphemes(){
-        Map<Character, String> result = new HashMap<>();
+        if(graphemes != null)
+            return graphemes;
         try {
+            Map<Character, String> graphemes = new HashMap<>();
             HttpClient client = new DefaultHttpClient();
             HttpGet request = new HttpGet(url);
             HttpResponse response = client.execute(request);
@@ -36,7 +39,7 @@ public class Connector {
                 JSONObject obj = arr.getJSONObject(i);
                 Character letter = obj.getString("letter");
                 String phoneme = obj.getString("phoneme");
-                result.put(letter, phoneme);
+                graphemes.put(letter, phoneme);
             }
         }
         catch (IOException e){
