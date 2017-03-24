@@ -1,3 +1,4 @@
+package rules;
 import grapheme.*;
 
 //1
@@ -7,7 +8,6 @@ rule "Sukoon deletion rule"
     //سكون
       $letter : Letter(content == "a")
     then
-      System.out.println("test");
       $letter.setRepresentation(Letter.NULL_CHAR);
 end
 
@@ -30,6 +30,15 @@ rule "Elision Second Rule( الف بعدها تنوين)"
       eval($letter.firstOfNextIs("a"))
     then
       $letter.setRepresentation(Letter.NULL_CHAR);
+end
+
+//2-3
+
+rule "Elision Third Rule( همزة الوصل متل طأطأ)"
+    when
+      $letter : Letter(content == "أ")
+    then
+      $letter.setRepresentation("?");
 end
 
 //2-4
@@ -147,6 +156,8 @@ rule "Ligature Fourth"
     then
       $letter.setRepresentation("?a:");
 end
+
+// the remaining rules are in code
 
 // 8 - 1
 

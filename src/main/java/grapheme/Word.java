@@ -17,14 +17,26 @@ public class Word{
     }
 
     public String representation(StatefulKnowledgeSession session){
-        for (Letter letter : letters) {
+        int size = letters.size(), startingIndex = 0;
+        if(letters.get(0).getContent().equals("ل") && letters.get(0).getContent().equals("أ")){
+            letters.get(0).setRepresentation("la?a");
+            letters.get(1).setRepresentation("");
+            startingIndex = 2;
+        }
+        if(letters.get(0).getContent().equals("ا") && letters.get(1).getContent().equals("ل") && letters.get(2).getContent().equals("أ")){
+            letters.get(0).setRepresentation("?al?a");
+            letters.get(1).setRepresentation("");
+            letters.get(2).setRepresentation("");
+            startingIndex = 3;
+        }
+        for (int i = startingIndex; i < size; ++i) {
+            Letter letter = letters.get(i);
             FactHandle handle = session.insert(letter);
-            System.out.println(session.fireAllRules());
+            session.fireAllRules(1);
             session.delete(handle);
             if (letter.getRepresentation() == null) {
                 letter.setRepresentation(Graphemes.getRepresentation(letter.getContent()));
             }
-            System.out.println(letter.getRepresentation());
         }
         return String.join("", letters);
     }
