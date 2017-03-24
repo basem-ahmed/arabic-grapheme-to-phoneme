@@ -6,6 +6,8 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,7 +24,7 @@ public class Connector {
         if(graphemes != null)
             return graphemes;
         try {
-            Map<Character, String> graphemes = new HashMap<>();
+            graphemes = new HashMap<>();
             HttpClient client = new DefaultHttpClient();
             HttpGet request = new HttpGet(url);
             HttpResponse response = client.execute(request);
@@ -37,7 +39,7 @@ public class Connector {
             int size = arr.length();
             for (int i = 0; i < size; i++) {
                 JSONObject grapheme = arr.getJSONObject(i);
-                Character letter = grapheme.getString("letter");
+                Character letter = grapheme.getString("letter").charAt(0);
                 String phoneme = grapheme.getString("phoneme");
                 graphemes.put(letter, phoneme);
             }
