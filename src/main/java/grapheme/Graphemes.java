@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Graphemes {
+    private Graphemes(){}
     private static Map<Character, String> graphemes;
     static {
         graphemes = Connector.getGraphemes();
