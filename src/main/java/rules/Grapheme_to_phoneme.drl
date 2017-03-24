@@ -16,7 +16,7 @@ end
 rule "Elision First Rule(وا)"
     when
       $letter : Letter(content == "ا")
-      eval($letter.lastOfPrevIs('و'))
+      eval($letter.lastOfPrevIs("و"))
     then
       $letter.setRepresentation(Letter.NULL_CHAR);
 end
@@ -27,7 +27,7 @@ rule "Elision Second Rule( الف بعدها تنوين)"
     when
       $letter : Letter(content == "ا")
       //تنوين فتحة
-      eval($letter.firstOfNextIs('a'))
+      eval($letter.firstOfNextIs("a"))
     then
       $letter.setRepresentation(Letter.NULL_CHAR);
 end
@@ -38,6 +38,7 @@ rule "Elision Third Rule( همزة الوصل متل طأطأ)"
     when
       $letter : Letter(content == "أ")
     then
+      System.out.println("arrived");
       $letter.setRepresentation("?");
 end
 
@@ -47,7 +48,7 @@ rule "Elision Fourth Rule(مد الألف متل جواب)"
     when
       $letter : Letter(content == "ا")
       // فتحة
-      eval($letter.lastOfPrevIs('a'))
+      eval($letter.lastOfPrevIs("a"))
     then
       $letter.setRepresentation("a:");
 end
@@ -162,10 +163,10 @@ end
 rule "Shamsi"
     when
       $letter : Letter(content == "ل")
-      eval($letter.lastOfPrevIs('ا'))
+      eval($letter.lastOfPrevIs("ا"))
       eval($letter.firstOfNextIsShamsi())
     then
-      $letter.setRepresentation(Graphemes.getRepresentation($letter.getFirstOfNext()));
+      $letter.setRepresentation(Graphemes.getRepresentation(String.valueOf($letter.getFirstOfNext())));
       $letter.setHasShamsi(true);
 end
 
@@ -176,7 +177,7 @@ rule "Long vowel generation first"
     when
      // فتحة
       $letter : Letter(content == "aa")
-      eval($letter.firstOfNextIs('ا'))
+      eval($letter.firstOfNextIs("ا"))
     then
       $letter.setRepresentation("a:");
 end
@@ -187,7 +188,7 @@ rule "Long vowel generation second"
     when
      //ضمة
       $letter : Letter(content == "")
-      eval($letter.firstOfNextIs('و'))
+      eval($letter.firstOfNextIs("و"))
     then
       $letter.setRepresentation("u:");
 end
@@ -198,7 +199,7 @@ rule "Long vowel generation third"
     when
     //كسرة
       $letter : Letter(content == "aaa")
-      eval($letter.firstOfNextIs('ي'))
+      eval($letter.firstOfNextIs("ي"))
     then
       $letter.setRepresentation("i:");
 end
@@ -208,7 +209,7 @@ rule "Fataha"
     when
     //فتحة
       $letter : Letter(content == "saa")
-      eval(!$letter.firstOfNextIs('ا'))
+      eval(!$letter.firstOfNextIs("ا"))
     then
       $letter.setRepresentation("a:");
 end
@@ -218,7 +219,7 @@ rule "Dama"
     when
     //ضمة
       $letter : Letter(content == "")
-      eval(!$letter.firstOfNextIs('و'))
+      eval(!$letter.firstOfNextIs("و"))
     then
       $letter.setRepresentation("w:");
 end
@@ -228,7 +229,7 @@ rule "Kasra"
     when
     //كسرة
       $letter : Letter(content == "")
-      eval(!$letter.firstOfNextIs('ي'))
+      eval(!$letter.firstOfNextIs("ي"))
     then
       $letter.setRepresentation("i:");
 end
