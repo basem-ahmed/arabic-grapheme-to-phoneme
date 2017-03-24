@@ -21,31 +21,30 @@ public class Connector {
     private static final String url = "http://localhost:" + port + "/letters";
     private static Map<Character, String> graphemes;
     public static Map<Character, String> getGraphemes(){
-        if(graphemes != null)
-            return graphemes;
-        try {
-            graphemes = new HashMap<>();
-            HttpClient client = new DefaultHttpClient();
-            HttpGet request = new HttpGet(url);
-            HttpResponse response = client.execute(request);
-            BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-            String line;
-            StringBuilder builder = new StringBuilder();
-            while ((line = rd.readLine()) != null) {
-                builder.append(line);
+        if(graphemes == null) {
+            try {
+                graphemes = new HashMap<>();
+                HttpClient client = new DefaultHttpClient();
+                HttpGet request = new HttpGet(url);
+                HttpResponse response = client.execute(request);
+                BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+                String line;
+                StringBuilder builder = new StringBuilder();
+                while ((line = rd.readLine()) != null) {
+                    builder.append(line);
+                }
+                JSONObject res = new JSONObject(builder.toString());
+                JSONArray arr = res.getJSONArray("letters");
+                int size = arr.length();
+                for (int i = 0; i < size; i++) {
+                    JSONObject grapheme = arr.getJSONObject(i);
+                    Character letter = grapheme.getString("letter").charAt(0);
+                    String phoneme = grapheme.getString("phoneme");
+                    graphemes.put(letter, phoneme);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            JSONObject res = new JSONObject(builder.toString());
-            JSONArray arr = res.getJSONArray("letters");
-            int size = arr.length();
-            for (int i = 0; i < size; i++) {
-                JSONObject grapheme = arr.getJSONObject(i);
-                Character letter = grapheme.getString("letter").charAt(0);
-                String phoneme = grapheme.getString("phoneme");
-                graphemes.put(letter, phoneme);
-            }
-        }
-        catch (IOException e){
-            e.printStackTrace();
         }
         return graphemes;
     }
