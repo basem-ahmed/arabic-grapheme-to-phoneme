@@ -14,7 +14,7 @@ public class GraphemeToPhonemeConverter {
     }
 
     public String convert(String text){
-        List<Sentence> sentences = Arrays.stream(text.split(new String[]{".", ","})).map(x -> new Sentence(x.split(" "))).collect(Collectors.toList());
+        List<Sentence> sentences = Arrays.stream(text.split("[,.]")).map(x -> new Sentence(x.split(" "))).collect(Collectors.toList());
         return String.join("\n", sentences);
     }
 
