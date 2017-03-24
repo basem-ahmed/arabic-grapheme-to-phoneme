@@ -5,7 +5,7 @@ import java.util.*;
 public class Letter implements CharSequence {
     private char content;
     private String representation;
-    private String previous, next;
+    public String previous, next;
     private boolean hasShamsi = false;
 
     public Letter(char content, String previous, String next) {
