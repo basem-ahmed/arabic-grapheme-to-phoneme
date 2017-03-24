@@ -1,20 +1,28 @@
+import grapheme.GraphemeToPhonemeConverter;
+import grapheme.Letter;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Collection;
 
 public class Converter {
     public static void main(String[] args) throws IOException{
+        final String ruleFilePath = "/home/obada/IdeaProjects/GraphemeToPhoneme/src/main/java/rules/Grapheme_to_phoneme.drl";
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newInputStreamResource(new FileInputStream("/home/obada/IdeaProjects/GraphemeToPhoneme/src/main/java/rules/Grapheme_to_phoneme.drl")), ResourceType.DRL);
+        kbuilder.add(ResourceFactory.newFileResource(ruleFilePath), ResourceType.DRL);
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors.size() > 0) {
             for (KnowledgeBuilderError error: errors) {
@@ -22,9 +30,12 @@ public class Converter {
             }
             throw new IllegalArgumentException("Could not parse knowledge.");
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-        //String text = "مرحبا كيف حالك يا صديقي. ذهبوا إلى الملعب برفقة أصدقائهم. طأطأ رأسه";
-        //System.out.println(new GraphemeToPhonemeConverter(session).convert(text));
+        final Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(pkgs);
+        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        String text = "طأطأ.";
+        System.out.println(new GraphemeToPhonemeConverter(session).convert(text));
+        session.dispose();
     }
 }

@@ -16,36 +16,67 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Connector {
-    private Connector(){}
+    private Connector() {
+    }
+
     private static final String port = "8080";
     private static final String url = "http://localhost:" + port + "/letters";
-    private static Map<Character, String> graphemes;
-    public static Map<Character, String> getGraphemes(){
-        if(graphemes == null) {
-            try {
-                graphemes = new HashMap<>();
-                HttpClient client = new DefaultHttpClient();
-                HttpGet request = new HttpGet(url);
-                HttpResponse response = client.execute(request);
-                BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-                String line;
-                StringBuilder builder = new StringBuilder();
-                while ((line = rd.readLine()) != null) {
-                    builder.append(line);
-                }
-                JSONObject res = new JSONObject(builder.toString());
-                JSONArray arr = res.getJSONArray("letters");
-                int size = arr.length();
-                for (int i = 0; i < size; i++) {
-                    JSONObject grapheme = arr.getJSONObject(i);
-                    Character letter = grapheme.getString("letter").charAt(0);
-                    String phoneme = grapheme.getString("phoneme");
-                    graphemes.put(letter, phoneme);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    private static Map<String, String> graphemes = new HashMap<>();
+    static {
+        graphemes.put("ء", "?");
+        graphemes.put("ا", "a");
+        graphemes.put("ب", "b");
+        graphemes.put("ت", "t");
+        graphemes.put("ث", "T");
+        graphemes.put("ج", "g");
+        graphemes.put("خ", "x");
+        graphemes.put("ح", "X");
+        graphemes.put("د", "d");
+        graphemes.put("ذ", "D");
+        graphemes.put("ر", "r");
+        graphemes.put("ز", "z");
+        graphemes.put("س", "s");
+        graphemes.put("ش", "S");
+        graphemes.put("ص", "s'");
+        graphemes.put("ض", "d'");
+        graphemes.put("ط", "t'");
+        graphemes.put("ظ", "D'");
+        graphemes.put("ع", "?'");
+        graphemes.put("غ", "G");
+        graphemes.put("ف", "f");
+        graphemes.put("ق", "q");
+        graphemes.put("ك", "k");
+        graphemes.put("ل", "l");
+        graphemes.put("م", "m");
+        graphemes.put("ن", "n");
+        graphemes.put("ه", "h");
+        graphemes.put("و", "w");
+        graphemes.put("ي", "j");
+    }
+    public static Map<String, String> getGraphemes() {
         return graphemes;
+//        try {
+//            HttpClient client = new DefaultHttpClient();
+//            HttpGet request = new HttpGet(url);
+//            HttpResponse response = client.execute(request);
+//            BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+//            String line;
+//            StringBuilder builder = new StringBuilder();
+//            while ((line = rd.readLine()) != null) {
+//                builder.append(line);
+//            }
+//            JSONObject res = new JSONObject(builder.toString());
+//            JSONArray arr = res.getJSONArray("letters");
+//            int size = arr.length();
+//            for (int i = 0; i < size; i++) {
+//                JSONObject grapheme = arr.getJSONObject(i);
+//                Character letter = grapheme.getString("letter");
+//                String phoneme = grapheme.getString("phoneme");
+//                graphemes.put(letter, phoneme);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return graphemes;
     }
 }

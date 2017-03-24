@@ -3,12 +3,12 @@ package grapheme;
 import java.util.*;
 
 public class Letter implements CharSequence {
-    private char content;
+    private String content;
     private String representation;
-    public String previous, next;
+    private String previous, next;
     private boolean hasShamsi = false;
 
-    public Letter(char content, String previous, String next) {
+    public Letter(String content, String previous, String next) {
         this.content = content;
         this.previous = previous;
         this.next = next;
@@ -18,23 +18,23 @@ public class Letter implements CharSequence {
         return previous.charAt(previous.length() - 1);
     }
 
-    public boolean firstOfNextIs(char c) {
-        return next != null && next.charAt(0) == c;
+    public boolean firstOfNextIs(String c) {
+        return next != null && next.charAt(0) == c.charAt(0);
     }
 
-    public boolean lastOfPrevIs(char c) {
-        return previous != null && previous.charAt(previous.length() - 1) == c;
+    public boolean lastOfPrevIs(String c) {
+        return previous != null && previous.charAt(previous.length() - 1) == c.charAt(0);
     }
 
     public boolean firstOfNextIsShamsi(){
         return shamsi.contains(next.charAt(0));
     }
 
-    public char getContent() {
+    public String getContent() {
         return content;
     }
 
-    public void setContent(char content) {
+    public void setContent(String content) {
         this.content = content;
     }
 
@@ -56,6 +56,22 @@ public class Letter implements CharSequence {
 
     public void setHasShamsi(boolean hasShamsi) {
         this.hasShamsi = hasShamsi;
+    }
+
+    public String getPrevious() {
+        return previous;
+    }
+
+    public void setPrevious(String previous) {
+        this.previous = previous;
+    }
+
+    public String getNext() {
+        return next;
+    }
+
+    public void setNext(String next) {
+        this.next = next;
     }
 
     @Override

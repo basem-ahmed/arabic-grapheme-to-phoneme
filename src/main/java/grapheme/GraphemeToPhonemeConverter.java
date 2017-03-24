@@ -29,7 +29,7 @@ public class GraphemeToPhonemeConverter {
             for (int i = 1; i < size; i++) {
                 Word prev = words.get(i - 1),
                      current = words.get(i);
-                builder.append(current.hasShamsi()? prev.getLastLetter().getRepresentation() : "" + current.representation(session));
+                builder.append(" ").append(current.hasShamsi() ? prev.getLastLetter().getRepresentation() : "" + current.representation(session));
             }
             rep = builder.toString();
         }
