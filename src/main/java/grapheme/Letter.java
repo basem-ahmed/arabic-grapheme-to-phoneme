@@ -79,10 +79,10 @@ public class Letter implements CharSequence {
     }
 
     public static final String NULL_CHAR = "-";
-    private static final Set<Character> shamsi = new HashSet<>();
-    private static final Set<Character> qamari = new HashSet<>();
+    private static Set<Character> shamsi = new HashSet<>();
+    private static Set<Character> qamari = new HashSet<>();
     static {
-        shamsi = Collections.unmodifiableSet(new HashSet<>(Arrays.asList('')));
-        qamari = Collections.unmodifiableSet(new HashSet<>(Arrays.asList('')));
+        shamsi = Collections.unmodifiableSet(new HashSet<>(Arrays.asList('ث','ت','د','ذ','ر','ز','س','ش','ص','ض','ط','ظ','ن','م')));
+        qamari = Collections.unmodifiableSet(new HashSet<>(Arrays.asList('أ','ب','ج','ح','خ','ع','غ','ف','ق','ك','م','ه','و','ي')));
     }
 }
