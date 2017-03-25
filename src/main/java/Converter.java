@@ -16,20 +16,18 @@ import java.util.Collection;
 public class Converter {
     public static void main(String[] args) throws IOException{
         final String ruleFilePath = "/home/obada/IdeaProjects/GraphemeToPhoneme/src/main/java/rules/Grapheme_to_phoneme.drl";
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newFileResource(ruleFilePath), ResourceType.DRL);
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        final KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors.size() > 0) {
-            for (KnowledgeBuilderError error: errors) {
-                System.err.println(error);
-            }
+            errors.forEach(System.out::println);
             throw new IllegalArgumentException("Could not parse knowledge.");
         }
         final Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages(pkgs);
         final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-        String text = "طأطأ.";
+        final String text = "الشمس.";
         System.out.println(new GraphemeToPhonemeConverter(session).convert(text));
         session.dispose();
     }

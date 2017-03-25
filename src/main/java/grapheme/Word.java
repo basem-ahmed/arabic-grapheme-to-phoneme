@@ -11,44 +11,52 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Word {
-    private List<Letter> letters = new ArrayList<>();
+    private Letter first;
     private List<Syllable> syllables = new ArrayList<>();
 
     public Word(String word, StatefulKnowledgeSession session) {
-        letters.add(new Letter(String.valueOf(word.charAt(0)), null, word.substring(1)));
-        for (int i = 1; i < word.length() - 1; i++) {
-            letters.add(new Letter(String.valueOf(word.charAt(i)), word.substring(0, i), word.substring(i + 1)));
+        Letter l = new Letter(String.valueOf(word.charAt(0)), null);
+        first = l;
+        int size = word.length();
+        for (int i = 1; i < size; i++) {
+            Letter c = new Letter(String.valueOf(word.charAt(i)), l);
+            l.setNext(c);
+            l = c;
         }
-        letters.add(new Letter(String.valueOf(word.charAt(word.length() - 1)), word.substring(0, word.length() - 1), null));
         init(session);
     }
 
     private void init(StatefulKnowledgeSession session) {
-        int size = letters.size(), startingIndex = 0;
-        if (letters.get(0).getContent().equals("ل") && letters.get(0).getContent().equals("أ")) {
-            letters.get(0).setRepresentation("la?a");
-            letters.get(1).setRepresentation("");
-            startingIndex = 2;
+        Letter begin = first;
+        if(first.getContent().equals("ل") && first.getNext().getContent().equals("أ")){
+            first.setRepresentation("la?a");
+            first.getNext().setRepresentation("la?a");
+            begin = first.getNext().getNext();
         }
-        if (letters.get(0).getContent().equals("ا") && letters.get(1).getContent().equals("ل") && letters.get(2).getContent().equals("أ")) {
-            letters.get(0).setRepresentation("?al?a");
-            letters.get(1).setRepresentation("");
-            letters.get(2).setRepresentation("");
-            startingIndex = 3;
+        if(first.getContent().equals("ا") && first.getNext().getContent().equals("ل") && first.getNext().getNext().getNext().equals("أ")){
+            first.setRepresentation("?al?a");
+            first.getNext().setRepresentation("");
+            first.getNext().getNext().setRepresentation("");
+            begin = first.getNext().getNext().getNext();
         }
-        for (int i = startingIndex; i < size; ++i) {
-            Letter letter = letters.get(i);
+        for (Letter letter = begin; letter != null; letter = letter.getNext()) {
             FactHandle handle = session.insert(letter);
             session.fireAllRules(1);
             session.delete(handle);
             if (letter.getRepresentation() == null) {
                 letter.setRepresentation(Graphemes.getRepresentation(letter.getContent()));
             }
+            System.out.println(letter.getContent());
+            System.out.println(letter.getRepresentation());
         }
-        syllablify();
+        //syllablify();
     }
 
     private void syllablify() {
+        List<Letter> letters = new ArrayList<>();
+        for(Letter temp = first; temp != null; temp = temp.getNext()){
+            letters.add(temp);
+        }
         List<String> sylabs = Arrays.asList("CVCC, CVC", "CV");
         Function<String, Integer> getIndex = (word) -> {
             for (String sylab : sylabs) {
@@ -75,23 +83,19 @@ public class Word {
     }
 
     public String representation() {
-        return letters.stream().map(Letter::getRepresentation).reduce("", (f, s) -> f + s);
+        StringBuilder builder = new StringBuilder();
+        for(Letter letter = first; letter != null; letter = letter.getNext()){
+            builder.append(letter.getRepresentation());
+        }
+        return builder.toString();
     }
 
-    public List<Letter> getLetters() {
-        return letters;
+    public Letter getFirst() {
+        return first;
     }
 
-    public void setLetters(List<Letter> letters) {
-        this.letters = letters;
-    }
-
-    public boolean hasShamsi() {
-        return letters.stream().anyMatch(Letter::hasShamsi);
-    }
-
-    public Letter getLastLetter() {
-        return letters.get(letters.size() - 1);
+    public void setFirst(Letter first) {
+        this.first = first;
     }
 
     public List<Syllable> getSyllables() {
