@@ -28,12 +28,12 @@ public class Word {
 
     private void init(StatefulKnowledgeSession session) {
         Letter begin = first;
-        if(first.getContent().equals("ل") && first.getNext().getContent().equals("أ")){
+        if (first.getContent().equals("ل") && first.getNext().getContent().equals("أ")) {
             first.setRepresentation("la?a");
             first.getNext().setRepresentation("la?a");
             begin = first.getNext().getNext();
         }
-        if(first.getContent().equals("ا") && first.getNext().getContent().equals("ل") && first.getNext().getNext().getNext().equals("أ")){
+        if (first.getContent().equals("ا") && first.getNext().getContent().equals("ل") && first.getNext().getNext().getNext().equals("أ")) {
             first.setRepresentation("?al?a");
             first.getNext().setRepresentation("");
             first.getNext().getNext().setRepresentation("");
@@ -54,7 +54,7 @@ public class Word {
 
     private void syllablify() {
         List<Letter> letters = new ArrayList<>();
-        for(Letter temp = first; temp != null; temp = temp.getNext()){
+        for (Letter temp = first; temp != null; temp = temp.getNext()) {
             letters.add(temp);
         }
         List<String> sylabs = Arrays.asList("CVCC, CVC", "CV");
@@ -68,7 +68,7 @@ public class Word {
         List<Letter> temp = letters.stream()
                 .filter(l -> !l.getRepresentation().equals(Letter.NULL_CHAR))
                 .collect(Collectors.toList());
-        while (true){
+        while (true) {
             String types = temp.stream()
                     .map(l -> l.getType().toString())
                     .reduce("", (f, s) -> f + s);
@@ -84,7 +84,7 @@ public class Word {
 
     public String representation() {
         StringBuilder builder = new StringBuilder();
-        for(Letter letter = first; letter != null; letter = letter.getNext()){
+        for (Letter letter = first; letter != null; letter = letter.getNext()) {
             builder.append(letter.getRepresentation());
         }
         return builder.toString();
@@ -96,6 +96,12 @@ public class Word {
 
     public void setFirst(Letter first) {
         this.first = first;
+    }
+
+    public boolean hasShamsi() {
+        return first.getContent().equals("ا")
+                && first.getNext().getContent().equals("ل")
+                && first.getNext().getNext().isShamsi();
     }
 
     public List<Syllable> getSyllables() {

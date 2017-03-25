@@ -28,10 +28,7 @@ public class GraphemeToPhonemeConverter {
             StringBuilder builder = new StringBuilder(words.get(0).representation());
             for (int i = 1; i < size; i++) {
                 Word current = words.get(i);
-                boolean shamsi = current.getFirst().getContent().equals("ا")
-                              && current.getFirst().getNext().getContent().equals("ل")
-                              && current.getFirst().getNext().getNext().isShamsi();
-                builder.append(shamsi ? "" : " ").append(current.representation());
+                builder.append(current.hasShamsi() ? "" : " ").append(current.representation());
             }
             rep = builder.toString();
         }
