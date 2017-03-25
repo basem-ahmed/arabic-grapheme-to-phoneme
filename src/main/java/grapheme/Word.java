@@ -4,11 +4,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class Word {
     private Letter first;
@@ -27,6 +23,23 @@ public class Word {
     }
 
     private void init(StatefulKnowledgeSession session) {
+        Letter begin = handleSpeicalCases();
+        applyRules(begin, session);
+        syllablify();
+    }
+
+    private void applyRules(Letter begin, StatefulKnowledgeSession session){
+        for (Letter letter = begin; letter != null; letter = letter.getNext()) {
+            FactHandle handle = session.insert(letter);
+            session.fireAllRules(1);
+            session.delete(handle);
+            if (letter.getRepresentation() == null) {
+                letter.setRepresentation(Graphemes.getRepresentation(letter.getContent()));
+            }
+        }
+    }
+
+    private Letter handleSpeicalCases(){
         Letter begin = first;
         if (first.getContent().equals("ل") && first.getNext().getContent().equals("أ")) {
             first.setRepresentation("la?a");
@@ -39,17 +52,7 @@ public class Word {
             first.getNext().getNext().setRepresentation("");
             begin = first.getNext().getNext().getNext();
         }
-        for (Letter letter = begin; letter != null; letter = letter.getNext()) {
-            FactHandle handle = session.insert(letter);
-            session.fireAllRules(1);
-            session.delete(handle);
-            if (letter.getRepresentation() == null) {
-                letter.setRepresentation(Graphemes.getRepresentation(letter.getContent()));
-            }
-            System.out.println(letter.getContent());
-            System.out.println(letter.getRepresentation());
-        }
-        //syllablify();
+        return begin;
     }
 
     private void syllablify() {
@@ -57,29 +60,7 @@ public class Word {
         for (Letter temp = first; temp != null; temp = temp.getNext()) {
             letters.add(temp);
         }
-        List<String> sylabs = Arrays.asList("CVCC, CVC", "CV");
-        Function<String, Integer> getIndex = (word) -> {
-            for (String sylab : sylabs) {
-                if (word.endsWith(sylab))
-                    return sylab.length();
-            }
-            return 0;
-        };
-        List<Letter> temp = letters.stream()
-                .filter(l -> !l.getRepresentation().equals(Letter.NULL_CHAR))
-                .collect(Collectors.toList());
-        while (true) {
-            String types = temp.stream()
-                    .map(l -> l.getType().toString())
-                    .reduce("", (f, s) -> f + s);
-            int len = getIndex.apply(types);
-            temp = temp.subList(types.length() - len, types.length() - 1);
-            syllables.add(new Syllable(temp));
-            if (temp.size() == 3 || temp.size() == 4) {
-                Collections.reverse(syllables);
-                break;
-            }
-        }
+        this.syllables = new MatchSyllabifier().syllablify(letters);
     }
 
     public String representation() {

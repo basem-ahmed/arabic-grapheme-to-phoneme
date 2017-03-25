@@ -1,4 +1,5 @@
 import grapheme.GraphemeToPhonemeConverter;
+import grapheme.Letter;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
