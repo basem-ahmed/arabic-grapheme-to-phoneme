@@ -172,6 +172,16 @@ rule "Shamsi"
 end
 
 
+rule "Shamsi Second"
+    when
+      $letter : Letter(content == "ل")
+      eval($letter.lastOfPrevIs("ا"))
+      eval($letter.firstOfNextIsShamsi())
+    then
+      $letter.setRepresentation(Graphemes.getRepresentation(String.valueOf($letter.getFirstOfNext())));
+      $letter.setHasShamsi(true);
+end
+
 // 9 - 1
 
 rule "Long vowel generation first"

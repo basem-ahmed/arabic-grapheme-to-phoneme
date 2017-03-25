@@ -23,13 +23,12 @@ public class GraphemeToPhonemeConverter {
         private String rep;
 
         public Sentence(String[] wrs) {
-            Arrays.stream(wrs).forEach(word -> this.words.add(new Word(word)));
+            Arrays.stream(wrs).forEach(word -> this.words.add(new Word(word, session)));
             int size = words.size();
-            StringBuilder builder = new StringBuilder(words.get(0).representation(session));
+            StringBuilder builder = new StringBuilder(words.get(0).representation());
             for (int i = 1; i < size; i++) {
-                Word prev = words.get(i - 1),
-                     current = words.get(i);
-                builder.append(" ").append(current.hasShamsi() ? prev.getLastLetter().getRepresentation() : "" + current.representation(session));
+                Word current = words.get(i);
+                builder.append(current.hasShamsi() ? "" : " ").append(current.getLetters().get(2).getRepresentation()).append(current.representation());
             }
             rep = builder.toString();
         }
@@ -40,6 +39,10 @@ public class GraphemeToPhonemeConverter {
 
         public String representation(){
             return rep;
+        }
+
+        public List<List<Syllable>> syllables(){
+            return words.stream().map(Word::getSyllables).collect(Collectors.toList());
         }
 
         @Override

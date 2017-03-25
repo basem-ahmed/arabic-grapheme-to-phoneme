@@ -7,11 +7,13 @@ public class Letter implements CharSequence {
     private String representation;
     private String previous, next;
     private boolean hasShamsi = false;
-
+    private Type type;
+    public enum Type{V, C}
     public Letter(String content, String previous, String next) {
         this.content = content;
         this.previous = previous;
         this.next = next;
+        this.type = vowels.contains(content)? Type.V : Type.C;
     }
 
     public char getLastPrev(){
@@ -74,6 +76,10 @@ public class Letter implements CharSequence {
         this.next = next;
     }
 
+    public Type getType(){
+        return type;
+    }
+
     @Override
     public int length() {
         return representation.length();
@@ -95,10 +101,12 @@ public class Letter implements CharSequence {
     }
 
     public static final String NULL_CHAR = "-";
-    private static Set<Character> shamsi = new HashSet<>();
-    private static Set<Character> qamari = new HashSet<>();
+    private static Set<String> shamsi = new HashSet<>();
+    private static Set<String> qamari = new HashSet<>();
+    private static Set<String> vowels = new HashSet<>();
     static {
         shamsi = Collections.unmodifiableSet(new HashSet<>(Arrays.asList('ث','ت','د','ذ','ر','ز','س','ش','ص','ض','ط','ظ','ن','م')));
         qamari = Collections.unmodifiableSet(new HashSet<>(Arrays.asList('أ','ب','ج','ح','خ','ع','غ','ف','ق','ك','م','ه','و','ي')));
+        vowels = Collections.unmodifiableSet(new HashSet<>(Arrays.asList()));
     }
 }
