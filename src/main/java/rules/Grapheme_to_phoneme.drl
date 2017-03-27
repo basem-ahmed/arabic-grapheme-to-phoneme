@@ -161,6 +161,7 @@ end
 // 8 - 1
 
 rule "Shamsi"
+    salience -1
     when
       $letter : Letter(content == "ل")
       eval($letter.prevIs("ا"))

@@ -5,6 +5,8 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class Word {
     private Letter first;
@@ -28,18 +30,55 @@ public class Word {
         syllablify();
     }
 
-    private void applyRules(Letter begin, StatefulKnowledgeSession session){
-        for (Letter letter = begin; letter != null; letter = letter.getNext()) {
-            FactHandle handle = session.insert(letter);
-            session.fireAllRules(1);
-            session.delete(handle);
-            if (letter.getRepresentation() == null) {
-                letter.setRepresentation(Graphemes.getRepresentation(letter.getContent()));
+    private void applyRules(Letter begin, StatefulKnowledgeSession session) {
+        class Consumer implements Runnable {
+            StatefulKnowledgeSession knowledgeSession;
+            BlockingQueue<Letter> queue;
+
+            public Consumer(BlockingQueue<Letter> queue, StatefulKnowledgeSession session1) {
+                knowledgeSession = session1;
+                this.queue = queue;
             }
+
+            @Override
+            public void run() {
+                Letter letter;
+                List<FactHandle> handles = new ArrayList<>();
+                try {
+                    while ((letter = queue.take()) != null) {
+                        handles.add(knowledgeSession.insert(letter));
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                knowledgeSession.fireAllRules();
+                handles.forEach(factHandle -> knowledgeSession.delete(factHandle));
+            }
+
+            public void add(Letter letter) {
+                queue.add(letter);
+            }
+        }
+        BlockingQueue<Letter> letters = new ArrayBlockingQueue<>(10);
+        Thread thread = new Thread(new Consumer(letters, session));
+        thread.start();
+        for (Letter letter = begin; letter != null; letter = letter.getNext()) {
+            letters.offer(letter);
+//            FactHandle handle = session.insert(letter);
+//            session.fireAllRules(1);
+//            session.delete(handle);
+//            if (letter.getRepresentation() == null) {
+//                letter.setRepresentation(Graphemes.getRepresentation(letter.getContent()));
+//            }
+        }
+        thread.interrupt();
+        for (Letter letter = begin; letter != null; letter = letter.getNext()) {
+            if (letter.getRepresentation() == null)
+                letter.setRepresentation(Graphemes.getRepresentation(letter.getContent()));
         }
     }
 
-    private Letter handleSpeicalCases(){
+    private Letter handleSpeicalCases() {
         Letter begin = first;
         if (first.getContent().equals("ل") && first.getNext().getContent().equals("أ")) {
             first.setRepresentation("la?a");

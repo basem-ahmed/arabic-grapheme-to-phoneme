@@ -13,11 +13,12 @@ public class MatchSyllabifier implements Syllabifier{
         List<Syllable> syllables = new ArrayList<>();
         List<String> sylabs = Arrays.asList("CVCC, CVC", "CV");
         Function<String, Integer> getIndex = (word) -> {
-            for (String sylab : sylabs) {
-                if (word.endsWith(sylab))
-                    return sylab.length();
-            }
-            return 0;
+            return sylabs.stream().filter(word::endsWith).findFirst().map(String::length).orElse(0);
+//            for (String sylab : sylabs) {
+//                if (word.endsWith(sylab))
+//                    return sylab.length();
+//            }
+//            return 0;
         };
         List<Letter> temp = letters.stream()
                 .filter(l -> !l.getRepresentation().equals(Letter.NULL_CHAR))
