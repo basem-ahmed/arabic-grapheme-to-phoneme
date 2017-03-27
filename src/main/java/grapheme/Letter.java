@@ -87,6 +87,6 @@ public class Letter implements CharSequence {
     private static Set<String> vowels = new HashSet<>();
     static {
         shamsi = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("ت", "ث", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ن", "ل")));
-        vowels = Collections.unmodifiableSet(new HashSet<>(Arrays.asList()));
+        vowels = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("َ","ُ"","ِ","ً","ٍ","ٌ","ا","و","ي")));
     }
 }
