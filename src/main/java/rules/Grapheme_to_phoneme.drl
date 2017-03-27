@@ -6,7 +6,7 @@ import grapheme.*;
 rule "Sukoon deletion rule"
     when
     //سكون
-      $letter : Letter(content == "a")
+      $letter : Letter(content == "ْ")
     then
       $letter.setRepresentation(Letter.NULL_CHAR);
 end
@@ -27,7 +27,7 @@ rule "Elision Second Rule( الف بعدها تنوين)"
     when
       $letter : Letter(content == "ا")
       //تنوين فتحة
-      eval($letter.nextIs("a"))
+      eval($letter.nextIs("ً"))
     then
       $letter.setRepresentation(Letter.NULL_CHAR);
 end
@@ -56,7 +56,7 @@ rule "Elision Fourth Rule(مد الألف متل جواب)"
     when
       $letter : Letter(content == "ا")
       // فتحة
-      eval($letter.prevIs("a"))
+      eval($letter.prevIs("َ"))
     then
       $letter.setRepresentation("a:");
 end
@@ -84,7 +84,7 @@ end
 rule "Tanween Fataha"
     when
     //تنوين فتحة
-      $letter : Letter(content == "")
+      $letter : Letter(content == "ً")
     then
       $letter.setRepresentation("an");
 end
@@ -94,7 +94,7 @@ end
 rule "Tanween Dama"
     when
     //تنوين ضمة
-      $letter : Letter(content == "aaa")
+      $letter : Letter(content == "ٌ")
     then
       $letter.setRepresentation("un");
 end
@@ -104,7 +104,7 @@ end
 rule "Tanween Kasra"
     when
     // تنوين كسرة
-      $letter : Letter(content == "aaa")
+      $letter : Letter(content == "ٍ")
     then
       $letter.setRepresentation("in");
 end
@@ -115,7 +115,7 @@ end
 rule "Shedaa or Gemination"
     when
      //شدة
-      $letter : Letter(content == "")
+      $letter : Letter(content == "ّ")
     then
       $letter.setRepresentation(String.valueOf($letter.getPrevious().getRepresentation()));
 end
@@ -175,7 +175,7 @@ end
 rule "Long vowel generation first"
     when
      // فتحة
-      $letter : Letter(content == "aa")
+      $letter : Letter(content == "َ")
       eval($letter.nextIs("ا"))
     then
       $letter.setRepresentation("a:");
@@ -186,7 +186,7 @@ end
 rule "Long vowel generation second"
     when
      //ضمة
-      $letter : Letter(content == "")
+      $letter : Letter(content == "ُ")
       eval($letter.nextIs("و"))
     then
       $letter.setRepresentation("u:");
@@ -197,7 +197,7 @@ end
 rule "Long vowel generation third"
     when
     //كسرة
-      $letter : Letter(content == "aaa")
+      $letter : Letter(content == "ِ")
       eval($letter.nextIs("ي"))
     then
       $letter.setRepresentation("i:");
@@ -207,7 +207,7 @@ end
 rule "Fataha"
     when
     //فتحة
-      $letter : Letter(content == "saa")
+      $letter : Letter(content == "َ")
       eval(!$letter.nextIs("ا"))
     then
       $letter.setRepresentation("a:");
@@ -217,7 +217,7 @@ end
 rule "Dama"
     when
     //ضمة
-      $letter : Letter(content == "")
+      $letter : Letter(content == "ُ")
       eval(!$letter.nextIs("و"))
     then
       $letter.setRepresentation("w:");
@@ -227,7 +227,7 @@ end
 rule "Kasra"
     when
     //كسرة
-      $letter : Letter(content == "")
+      $letter : Letter(content == "ِ")
       eval(!$letter.nextIs("ي"))
     then
       $letter.setRepresentation("i:");
