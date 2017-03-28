@@ -52,8 +52,8 @@ public class Connector {
         graphemes.put("ه", "h");
         graphemes.put("و", "w");
         graphemes.put("ي", "j");
-        graphemes.put("َ", "a");
         graphemes.put("ً", "a:");
+        graphemes.put("َ", "a");
         graphemes.put("ُ", "u");
         graphemes.put("ٌ", "u:");
         graphemes.put("ِ", "i");

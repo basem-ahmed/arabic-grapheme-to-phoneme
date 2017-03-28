@@ -25,7 +25,7 @@ public class Word {
     }
 
     private void init(StatefulKnowledgeSession session) {
-        Letter begin = handleSpeicalCases();
+        Letter begin = handleSpecialCases();
         applyRules(begin, session);
         //syllablify();
     }
@@ -70,6 +70,7 @@ public class Word {
             if (letter.getRepresentation() == null) {
                 letter.setRepresentation(Graphemes.getRepresentation(letter.getContent()));
             }
+            System.out.println(letter.getContent() + " = " +letter.getRepresentation());
         }
 //        thread.interrupt();
 //        for (Letter letter = begin; letter != null; letter = letter.getNext()) {
@@ -78,14 +79,14 @@ public class Word {
 //        }
     }
 
-    private Letter handleSpeicalCases() {
+    private Letter handleSpecialCases() {
         Letter begin = first;
         if (first.getContent().equals("ل") && first.getNext().getContent().equals("أ")) {
             first.setRepresentation("la?a");
             first.getNext().setRepresentation("la?a");
             begin = first.getNext().getNext();
         }
-        if (first.getContent().equals("ا") && first.getNext().getContent().equals("ل") && first.getNext().getNext().getNext().equals("أ")) {
+        if (first.getContent().equals("ا") && first.getNext().getContent().equals("ل") && first.getNext().getNext().getNext().getContent().equals("أ")) {
             first.setRepresentation("?al?a");
             first.getNext().setRepresentation("");
             first.getNext().getNext().setRepresentation("");

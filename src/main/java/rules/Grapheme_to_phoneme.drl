@@ -57,6 +57,7 @@ rule "Elision Fourth Rule(مد الألف متل جواب)"
       $letter : Letter(content == "ا")
       // فتحة
       eval($letter.prevIs("َ"))
+      eval($letter.getNext() != null)
     then
       $letter.setRepresentation("a:");
 end
@@ -161,14 +162,14 @@ end
 // 8 - 1
 
 rule "Shamsi"
-    salience -1
     when
       $letter : Letter(content == "ل")
       eval($letter.prevIs("ا"))
-      eval($letter.getNext().isShamsi())
     then
-      $letter.setRepresentation(Graphemes.getRepresentation(String.valueOf($letter.getNext().getContent())));
-      $letter.getPrevious().setRepresentation("?a");
+      if($letter.getNext().isShamsi()){
+          $letter.setRepresentation(Graphemes.getRepresentation(String.valueOf($letter.getNext().getContent())));
+          $letter.getPrevious().setRepresentation("?a");
+      }
 end
 
 // 9 - 1
@@ -209,6 +210,7 @@ rule "Fataha"
     when
     //فتحة
       $letter : Letter(content == "َ")
+      eval($letter.getNext() != null)
       eval(!$letter.nextIs("ا"))
     then
       $letter.setRepresentation("a:");
@@ -219,6 +221,7 @@ rule "Dama"
     when
     //ضمة
       $letter : Letter(content == "ُ")
+      eval($letter.getNext() != null)
       eval(!$letter.nextIs("و"))
     then
       $letter.setRepresentation("w:");
@@ -229,6 +232,7 @@ rule "Kasra"
     when
     //كسرة
       $letter : Letter(content == "ِ")
+      eval($letter.getNext() != null)
       eval(!$letter.nextIs("ي"))
     then
       $letter.setRepresentation("i:");
