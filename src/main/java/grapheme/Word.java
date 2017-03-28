@@ -27,7 +27,7 @@ public class Word {
     private void init(StatefulKnowledgeSession session) {
         Letter begin = handleSpeicalCases();
         applyRules(begin, session);
-        syllablify();
+        //syllablify();
     }
 
     private void applyRules(Letter begin, StatefulKnowledgeSession session) {
@@ -59,23 +59,23 @@ public class Word {
                 queue.add(letter);
             }
         }
-        BlockingQueue<Letter> letters = new ArrayBlockingQueue<>(10);
-        Thread thread = new Thread(new Consumer(letters, session));
-        thread.start();
+//        BlockingQueue<Letter> letters = new ArrayBlockingQueue<>(10);
+//        Thread thread = new Thread(new Consumer(letters, session));
+//        thread.start();
         for (Letter letter = begin; letter != null; letter = letter.getNext()) {
-            letters.offer(letter);
-//            FactHandle handle = session.insert(letter);
-//            session.fireAllRules(1);
-//            session.delete(handle);
-//            if (letter.getRepresentation() == null) {
-//                letter.setRepresentation(Graphemes.getRepresentation(letter.getContent()));
-//            }
-        }
-        thread.interrupt();
-        for (Letter letter = begin; letter != null; letter = letter.getNext()) {
-            if (letter.getRepresentation() == null)
+            //letters.offer(letter);
+            FactHandle handle = session.insert(letter);
+            session.fireAllRules(1);
+            session.delete(handle);
+            if (letter.getRepresentation() == null) {
                 letter.setRepresentation(Graphemes.getRepresentation(letter.getContent()));
+            }
         }
+//        thread.interrupt();
+//        for (Letter letter = begin; letter != null; letter = letter.getNext()) {
+//            if (letter.getRepresentation() == null)
+//                letter.setRepresentation(Graphemes.getRepresentation(letter.getContent()));
+//        }
     }
 
     private Letter handleSpeicalCases() {
