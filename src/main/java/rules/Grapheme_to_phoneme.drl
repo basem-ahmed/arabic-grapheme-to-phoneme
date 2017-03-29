@@ -16,7 +16,7 @@ end
 rule "Elision First Rule(وا)"
     when
       $letter : Letter(content == "ا")
-      eval($letter.nextIs("و"))
+      eval($letter.prevIs("و"))
     then
       $letter.setRepresentation(Letter.NULL_CHAR);
 end
@@ -28,6 +28,7 @@ rule "Elision Second Rule( الف بعدها تنوين)"
       $letter : Letter(content == "ا")
       //تنوين فتحة
       eval($letter.nextIs("ً"))
+      eval($letter.getNext().getNext() == null)
     then
       $letter.setRepresentation(Letter.NULL_CHAR);
 end
@@ -86,6 +87,7 @@ rule "Tanween Fataha"
     when
     //تنوين فتحة
       $letter : Letter(content == "ً")
+      eval($letter.getNext() == null)
     then
       $letter.setRepresentation("an");
 end
@@ -96,6 +98,7 @@ rule "Tanween Dama"
     when
     //تنوين ضمة
       $letter : Letter(content == "ٌ")
+      eval($letter.getNext() == null)
     then
       $letter.setRepresentation("un");
 end
@@ -106,6 +109,7 @@ rule "Tanween Kasra"
     when
     // تنوين كسرة
       $letter : Letter(content == "ٍ")
+      eval($letter.getNext() == null)
     then
       $letter.setRepresentation("in");
 end
@@ -211,7 +215,6 @@ rule "Fataha"
     //فتحة
       $letter : Letter(content == "َ")
       eval($letter.getNext() != null)
-      eval(!$letter.nextIs("ا"))
     then
       $letter.setRepresentation("a:");
 end
@@ -222,7 +225,6 @@ rule "Dama"
     //ضمة
       $letter : Letter(content == "ُ")
       eval($letter.getNext() != null)
-      eval(!$letter.nextIs("و"))
     then
       $letter.setRepresentation("w:");
 end
@@ -233,7 +235,6 @@ rule "Kasra"
     //كسرة
       $letter : Letter(content == "ِ")
       eval($letter.getNext() != null)
-      eval(!$letter.nextIs("ي"))
     then
       $letter.setRepresentation("i:");
 end

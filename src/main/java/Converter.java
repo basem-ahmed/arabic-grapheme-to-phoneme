@@ -28,7 +28,7 @@ public class Converter {
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages(pkgs);
         final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-        final String text = "سَطَا الذِّئْبُ.";
+        final String text = "طأطأ.";
         System.out.println(new GraphemeToPhonemeConverter(session).convert(text));
         session.dispose();
     }
